@@ -6,3 +6,6 @@ body {
  .cesium-credit-logoContainer *{
  	display: none;
  }
+.cesium-viewer .cesium-widget-credits{
+ 	display: none;
+ }
