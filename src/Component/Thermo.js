@@ -12,9 +12,10 @@ class Thermo extends Component{
 		    animation: false,
 		    timeline: false,
 		    fullscreenButton: false,
-		    vrButton: false
-	        }
-        );
+		    vrButton: false,
+		    shouldAnimate : true,
+	    	
+	    });
     }
 	render(){
 		return(
