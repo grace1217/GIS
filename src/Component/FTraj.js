@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 
-class Trag extends Component{
+class FTraj extends Component{
 	render(){
 		return(
 			<div>
-				<h2>Trag</h2>
+				FTraj
 			</div>
 		)
 	}
 }
-export default Trag;
+
+export default FTraj

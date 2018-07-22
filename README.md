@@ -1,7 +1,4 @@
 
-## 文档地址
-https://www.jianshu.com/p/c980045cc4c4
-
 ## 项目运行
 
 ```

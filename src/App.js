@@ -1,76 +1,99 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import logo from './logo.svg';
 
 import './App.css';
 
 import Header from './Component/Header'
 import Home from './Component/Home'
-import Trag from './Component/Trag'
-import Thermo from './Component/Thermo'
+
+/**** 功能里面的组件 ****/
+import FHouse from './Component/FHouse.js'
+import FThermo from './Component/FThermo.js'
+import FGlobal from './Component/FGlobal.js'
+import FTraj from './Component/FTraj.js'
+
+/**** 其他里面的组件 ****/
+import Others1 from './Component/Others1'
+import Others2 from './Component/Others2'
+
 import Footer from './Component/Footer'
 
 class SAP extends Component {
   constructor(props) {
       super(props);
-      this.state = {DIS: false};
-      this.handleClick =this.handleClick.bind(this);
+      this.state = {
+        funControl: false,
+        otherControl: false
+      };
   }
-  handleClick() {
-        this.setState({display:this.state.display==="block"?"none":"block"
-        });
-    }
+  handleClick(){
+    this.setState({
+      funControl: false,
+      otherControl: false
+    })
+  }
+  handleFunClick() {
+    this.setState({
+      funControl: !this.state.funControl,
+      otherControl: false
+    });
+  }
+  handleOtherClick(){
+    this.setState({
+      otherControl: !this.state.otherControl,
+      funControl: false
+    });
+  }
   render(){
+    let funCls = 'dropdown-content';
+    let otherCls = 'dropdown-content';
+    if(this.state.funControl){
+      funCls += ' funStyle';
+      otherCls = 'dropdown-content';
+    }
+    if(this.state.otherControl){
+      otherCls += ' otherStyle';
+      funCls = 'dropdown-content';
+    }
       return(<div id="box" >
         <Router>
           <div>
             <div id="box-left">
               <ul>
-                <li>
-                  <Link to="/">首页</Link>
+                <li className="dropdown">
+                  <Link to="/" className="dropbtn" onClick={this.handleClick.bind(this)}>首页</Link>
                 </li>
                 <li>
-                  <Link to="/traj" onClick={this.handleClick.bind(this)}>功能</Link>
-                    <div id={"sp"}   style={{display:this.state.display}}>
-                      <span className="span">楼宇图</span>
-                      <span className="span">热力图</span>
-                      <span className="span">3D球型图</span>
-                      <span className="span">人员行走路径</span>
-                    </div>
+                  <Link to="/func/" className="dropbtn" onClick={this.handleFunClick.bind(this)}>功能</Link>
+                  <ul className={funCls}>
+                    <li className="a"><Link to='/func/'>楼宇</Link></li>
+                    <li className="a"><Link to='/func/thermo'>热力图</Link></li>
+                    <li className="a"><Link to='/func/global'>3D球型图</Link></li>
+                    <li className="a"><Link to='/func/traj'>人员轨迹</Link></li>
+                  </ul>
                 </li>
                 <li>
-                  <Link to="/thermo" onClick={this.handleClick.bind(this)}>其他</Link>   
-                  <div  style={{display:this.state.display==="none"?"block":"none"}}>
-                    <span className="span">使用说明</span>
-                    <span className="span">版本维护</span>
-                  </div>
+                  <Link to="/others/" className="dropbtn" onClick={this.handleOtherClick.bind(this)}>其他</Link>   
+                  <ul className={otherCls}>
+                    <li className="a"><Link to='/others/'>使用说明</Link></li>
+                    <li className="a"><Link to='/others/others2'>版本维护</Link></li>
+                  </ul>
                 </li>
               </ul>
             </div>
-            <div id="box-middle">
-              <img src={logo} className="big-logo" alt="logo" />
-              <div id="box-middle-right">
-                <button className="login" onClick={this.handleClick}>注册</button>
-                <button className="login" onClick={this.handleClick}>登陆</button>
-              </div>
-              <div id={"shuru"}>
-                   用户名：<input type={"text"}/>
-                  <br/>
-                   密  码：<input type={"text"}/>
-                  <br/>
-                  <button onClick={this.handleClick} >提交</button>
-              </div>
+            <div id='box-right'>
               <Route exact path="/" component={Home} />
-              <Route path="/traj" component={Trag} />
-              <Route path="/thermo" component={Thermo} ></Route>
-             
-            </div>        
+
+              <Route exact path="/func/" component={FHouse} />
+              <Route path='/func/thermo' component={FThermo} />
+              <Route path='/func/global' component={FGlobal} />
+              <Route path='/func/traj' component={FTraj} />
+
+              <Route exact path='/others/' component={Others1} />
+              <Route path='/others/others2' component={Others2} />
+            </div>            
           </div>
         </Router>
-        <div id="box-right">
-            <p className="text">项目简介:</p>
-            <p className="text">本项目自2018年7月9日起实施，项目组成员通过多方面调研，最终确定利用支持3D技术gis开源前端框架CesiumJS实现，主要完成的功能包括：3D可视化模型、楼宇模型、热力图</p>
-        </div>
       </div>)
   }
 }
