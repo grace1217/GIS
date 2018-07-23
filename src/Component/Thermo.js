@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Viewer from "cesium/Source/Widgets/Viewer/Viewer";
 
 class Thermo extends Component{
-	componentDidMount() {
+	componentDidMount() { 
         this.viewer = new Viewer(this.cesiumContainer,{
         	geocoder: false,
 		    homeButton: false,

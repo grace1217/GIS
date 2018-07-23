@@ -16,8 +16,13 @@ img{
 .App-logo-name{
   position: absolute;
   right: 10px;
-  top: 10px;
+  top: -15px;
   font:800 24px/80px "simsun";
+}
+.welcome{
+  position: absolute;
+  top: 74px;
+  right: 10px;
 }
 .App-header {
   background-color: skyblue;

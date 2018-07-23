@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import logo from '../logo.svg';
 
 class Home extends Component{
-	constructor(){
-		super()
+	constructor(props){
+		super(props)
 		this.state = {
 			username: '',
 			password: '',
-			errorTip: ''
+			errorTip: '',
 		}
 	}
 	showSubmit(){
@@ -19,6 +19,7 @@ class Home extends Component{
 				errorTip: "登录成功"
 			})
 			this.refs.homeSubmit.style.display = 'none'
+			this.refs.loginShow.style.display = 'none'
 		}else{
 			this.setState({
 				errorTip: "请输入正确的用户名或密码"
@@ -40,7 +41,7 @@ class Home extends Component{
 			<div className='home-main'>
 				<div className="home-middle">
 		            <img src={logo} className="big-logo" alt="logo" />
-		            <div className="home-middle-right">
+		            <div className="home-middle-right" ref='loginShow'>
 		            	<button className="login">注册</button>
 		                <button className="login" onClick={this.showSubmit.bind(this)}>登陆</button>
 		            </div>
