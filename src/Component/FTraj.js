@@ -22,12 +22,12 @@ import Model from 'cesium/Source/Scene/Model'
 import ModelAnimationLoop from 'cesium/Source/Scene/ModelAnimationLoop'
 
 
+const url = '../cesium/Apps/SampleData/models/CesiumAir/Cesium_Air.glb'
 
 
 class FTraj extends Component{
-
 componentDidMount() {
-	var viewer = new Viewer('cesiumContainer', {
+    var viewer = new Viewer('cesiumContainer',{
         shouldAnimate : true
     });
 
@@ -41,9 +41,10 @@ componentDidMount() {
     var scene = viewer.scene;
 
     var pathPosition = new SampledPositionProperty();
-    var entityPath = viewer.entities.add({
+
+    var entity = viewer.entities.add({
+        name : 'fly',
         position : pathPosition,
-        name : 'path',
         path : {
             show : true,
             leadTime : 0,
@@ -55,7 +56,7 @@ componentDidMount() {
                 color : Color.PALEGOLDENROD
             })
         }
-    });
+     });
 
     var camera = viewer.camera;
     var controller = scene.screenSpaceCameraController;
@@ -72,7 +73,7 @@ componentDidMount() {
     var fixedFrameTransform = Transforms.localFrameToFixedFrameGenerator('north', 'west');
 
     var planePrimitive = scene.primitives.add(Model.fromGltf({
-        url : 'cesium/Apps/SampleData/models/CesiumAir/Cesium_Air.gltf ',
+        url : url,
         modelMatrix : Transforms.headingPitchRollToFixedFrame(position, hpRoll, Ellipsoid.WGS84, fixedFrameTransform),
         minimumPixelSize : 128
     }));
@@ -83,7 +84,6 @@ componentDidMount() {
             speedup : 0.5,
             loop : ModelAnimationLoop.REPEAT
         });
-
         // Zoom to model
         r = 2.0 * Math.max(model.boundingSphere.radius, camera.frustum.near);
         controller.minimumZoomDistance = r * 0.5;
@@ -185,16 +185,12 @@ componentDidMount() {
     });
 }
 
-componentWillUnmount() {
-    if(this.viewer) {
-        this.viewer.destroy();
-    }
-}
+
 
 render(){
     return (
     	<div>
-        	<div id="cesiumContainer" ref={ element => this.cesiumContainer = element }/>
+            <div id="cesiumContainer" ref={ element => this.cesiumContainer = element }/>
         	<div id="toolbar">
 			    <table className="infoPanel">
 			        <tbody>
