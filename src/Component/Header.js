@@ -1,12 +1,17 @@
 import React,{Component} from 'react'
+import logo from '../logo.png'
 
 class Header extends Component{
 	render(){
 		return(
-			<header className="App-header">
-	            <h1 className="App-title">白金组</h1>
-	            <h3 className="App-title">gis可视化设计项目</h3>
-	            <p className="App-logo-name">中国移动</p>
+			<header className="AppHeader">
+				<div className='AppLeft'>
+					<h1>GIS可视化设计项目</h1>
+					<img src={logo} className="bigLogo" alt="logo" />
+				</div>
+				<div className='AppCenter'>
+	            	<p className="AppTitle">GIS可视化设计项目</p>
+				</div>
 	            <span className='welcome'>欢迎你，admin</span>
 	        </header>
 		)

@@ -1,237 +1,259 @@
 import React, { Component } from 'react';
-//import {Viewer} from 'cesium'
 import Viewer from "cesium/Source/Widgets/Viewer/Viewer";
 
-//import { Math as CesiumMath, Cartesian3, Color, createWorldTerrain, ArcGisMapServerImageryProvider } from "cesium";
-
-import SampledPositionProperty from 'cesium/Source/DataSources/SampledPositionProperty'
-import PolylineGlowMaterialProperty from 'cesium/Source/DataSources/PolylineGlowMaterialProperty'
-
-
-import Cartesian3 from 'cesium/Source/Core/Cartesian3'
-import Color from 'cesium/Source/Core/Color'
+import Math from "cesium/Source/Core/Math";
+import Cartesian3 from "cesium/Source/Core/Cartesian3";
+import Color from "cesium/Source/Core/Color";
 import Transforms from 'cesium/Source/Core/Transforms'
-import Ellipsoid from 'cesium/Source/Core/Ellipsoid'
-import JulianDate from 'cesium/Source/Core/JulianDate'
-import Math from 'cesium/Source/Core/Math'
-import Matrix4 from 'cesium/Source/Core/Matrix4'
 import HeadingPitchRoll from 'cesium/Source/Core/HeadingPitchRoll'
-import HeadingPitchRange from 'cesium/Source/Core/HeadingPitchRange'
+import Ellipsoid from 'cesium/Source/Core/Ellipsoid'
+import Matrix4 from 'cesium/Source/Core/Matrix4'
+import JulianDate from 'cesium/Source/Core/JulianDate'
 
-import Model from 'cesium/Source/Scene/Model'
-import ModelAnimationLoop from 'cesium/Source/Scene/ModelAnimationLoop'
+import ArcGisMapServerImageryProvider from "cesium/Source/Scene/ArcGisMapServerImageryProvider";
+import Model from "cesium/Source/Scene/Model";
 
+import SampledPositionProperty from "cesium/Source/DataSources/SampledPositionProperty";
+import PolylineGlowMaterialProperty from 'cesium/Source/DataSources/PolylineGlowMaterialProperty'
+/*import defined from "cesium/Source/Core/defined";
 
-const url = '../cesium/Apps/SampleData/models/CesiumAir/Cesium_Air.glb'
+import CzmlDataSource from "cesium/Source/DataSources/CzmlDataSource";
+*/
 
-
+const url = '../cesium/Apps/SampleData/models/CesiumMan/Cesium_Man.glb'
 class FTraj extends Component{
 componentDidMount() {
-    var viewer = new Viewer('cesiumContainer',{
-        shouldAnimate : true
-    });
+var view = new Viewer('cesiumContainer',{
+    baseLayerPicker: false,
+    imageryProvider: new ArcGisMapServerImageryProvider({
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
+    }) 
+});
 
-    var canvas = viewer.canvas;
-    canvas.setAttribute('tabindex', '0'); // needed to put focus on the canvas
-    canvas.addEventListener('click', function() {
-        canvas.focus();
-    });
+var canvas = view.canvas;
+
+canvas.setAttribute('tabindex', '0'); // needed to put focus on the canvas
+canvas.addEventListener('click', function() {
     canvas.focus();
+});
+canvas.focus();
 
-    var scene = viewer.scene;
+    var scene = view.scene;
+    
+    // 小人旋转角度
+    var radian = Math.toRadians(30.0);
+    // 小人的速度
+    var speed = 10;
+    // 速度矢量
+    var speedVector = new Cartesian3();
+    // 起始位置
+    var position = Cartesian3.fromDegrees(120.6200,31.3200,0);
+
+    //镜头一开始的位置
+    var point = Cartesian3.fromDegrees(120.6200,31.3200, 1500.0);
+    view.camera.setView({
+        destination : point,
+        orientation: {
+            heading : Math.toRadians(0.0), //默认值
+            pitch : Math.toRadians(-90.0), // 默认值
+            roll : 0.0 //默认值
+        }
+    });
+    //获取相关DOM
+    var longitude = document.getElementById('longitude');
+    var latitude = document.getElementById('latitude');
+    var altitude = document.getElementById('altitude');
 
     var pathPosition = new SampledPositionProperty();
 
-    var entity = viewer.entities.add({
-        name : 'fly',
-        position : pathPosition,
-        path : {
-            show : true,
-            leadTime : 0,
-            trailTime : 60,
-            width : 10,
-            resolution : 1,
-            material : new PolylineGlowMaterialProperty({
-                glowPower : 0.3,
-                color : Color.PALEGOLDENROD
-            })
-        }
-     });
-
-    var camera = viewer.camera;
-    var controller = scene.screenSpaceCameraController;
-    var r = 0;
-    var center = new Cartesian3();
-
+    longitude.innerHTML = '120.6200';
+    latitude.innerHTML = '31.3200';
+    altitude.innerHTML = '0.0000';
+   
+    // 用于设置小人方向
     var hpRoll = new HeadingPitchRoll();
-    var hpRange = new HeadingPitchRange();
-    var speed = 10;
-    var deltaRadians = Math.toRadians(3.0);
 
-    var position = Cartesian3.fromDegrees(-123.0744619, 44.0503706, 5000.0);
-    var speedVector = new Cartesian3();
-    var fixedFrameTransform = Transforms.localFrameToFixedFrameGenerator('north', 'west');
-
-    var planePrimitive = scene.primitives.add(Model.fromGltf({
-        url : url,
-        modelMatrix : Transforms.headingPitchRollToFixedFrame(position, hpRoll, Ellipsoid.WGS84, fixedFrameTransform),
-        minimumPixelSize : 128
+    var fixedFrameTransforms =  Transforms.localFrameToFixedFrameGenerator('north', 'west');
+    // 添加小人模型
+    var personPrimitive = scene.primitives.add(Model.fromGltf({
+        url: url,
+        modelMatrix: Transforms.headingPitchRollToFixedFrame(position, hpRoll, Ellipsoid.WGS84, fixedFrameTransforms),
+        minimumPixelSize:128
     }));
 
-    planePrimitive.readyPromise.then(function(model) {
-        // Play and loop all animations at half-speed
-        model.activeAnimations.addAll({
-            speedup : 0.5,
-            loop : ModelAnimationLoop.REPEAT
-        });
-        // Zoom to model
-        r = 2.0 * Math.max(model.boundingSphere.radius, camera.frustum.near);
-        controller.minimumZoomDistance = r * 0.5;
-        Matrix4.multiplyByPoint(model.modelMatrix, model.boundingSphere.center, center);
-        var heading = Math.toRadians(230.0);
-        var pitch = Math.toRadians(-20.0);
-        hpRange.heading = heading;
-        hpRange.pitch = pitch;
-        hpRange.range = r * 50.0;
-        camera.lookAt(center, hpRange);
-    });
+    // 小人状态标志
+    var flag = {
+        moveUp:false,
+        moveDown:false,
+        moveLeft:false,
+        moveRight:false
+    };
 
-    document.addEventListener('keydown', function(e) {
-        switch (e.keyCode) {
-            case 40:
-                if (e.shiftKey) {
-                    // speed down
-                    speed = Math.max(--speed, 1);
-                } else {
-                    // pitch down
-                    hpRoll.pitch -= deltaRadians;
-                    if (hpRoll.pitch < -Math.TWO_PI) {
-                        hpRoll.pitch += Math.TWO_PI;
-                    }
-                }
+    // 根据键盘按键返回标志
+    function setFlagStatus(key,value) {
+        switch (key.keyCode){
+            case 37:
+                // 左
+                flag.moveLeft = value;
                 break;
             case 38:
-                if (e.shiftKey) {
-                    // speed up
-                    speed = Math.min(++speed, 100);
-                } else {
-                    // pitch up
-                    hpRoll.pitch += deltaRadians;
-                    if (hpRoll.pitch > Math.TWO_PI) {
-                        hpRoll.pitch -= Math.TWO_PI;
-                    }
-                }
+                // 上
+                flag.moveUp = value;
                 break;
             case 39:
-                if (e.shiftKey) {
-                    // roll right
-                    hpRoll.roll += deltaRadians;
-                    if (hpRoll.roll > Math.TWO_PI) {
-                        hpRoll.roll -= Math.TWO_PI;
-                    }
-                } else {
-                    // turn right
-                    hpRoll.heading += deltaRadians;
-                    if (hpRoll.heading > Math.TWO_PI) {
-                        hpRoll.heading -= Math.TWO_PI;
-                    }
-                }
+                // 右
+                flag.moveRight = value;
                 break;
-            case 37:
-                if (e.shiftKey) {
-                    // roll left until
-                    hpRoll.roll -= deltaRadians;
-                    if (hpRoll.roll < 0.0) {
-                        hpRoll.roll += Math.TWO_PI;
-                    }
-                } else {
-                    // turn left
-                    hpRoll.heading -= deltaRadians;
-                    if (hpRoll.heading < 0.0) {
-                        hpRoll.heading += Math.TWO_PI;
-                    }
-                }
+            case 40:
+                flag.moveDown = value;
+                // 下
                 break;
             default:
+                console.log('您的操作有误');
+                break;
+        }
+    }
+
+    document.addEventListener('keydown',function(e){
+        setFlagStatus(e, true);
+    });
+
+    document.addEventListener('keyup',function(e){
+        setFlagStatus(e, false);
+    });
+
+
+    // 对帧添加监听事件 (onTick每当时钟被调用时触发响应时间) 一直在执行 
+    view.clock.onTick.addEventListener(function(clock){
+      
+        clock.currentTime=JulianDate.now();
+        
+        //========所以可以对下面这个函数进行更改
+        if(flag.moveUp){             
+            if(flag.moveLeft){
+                hpRoll.heading -= radian;
+            }
+
+            if(flag.moveRight){
+                hpRoll.heading += radian;
+            }
+            movePerson(true);
+        }
+            
+        if(flag.moveLeft){
+            hpRoll.heading -= radian;
+             movePerson(true);
+        }
+
+        if(flag.moveRight){
+            hpRoll.heading += radian;
+            movePerson(true);
+        }
+        
+        if(flag.moveDown){
+            if(flag.moveLeft){
+                hpRoll.heading -= radian;
+            }
+
+            if(flag.moveRight){
+                hpRoll.heading += radian;
+            }
+            movePerson(false);
         }
     });
 
-    var headingSpan = document.getElementById('heading');
-    var pitchSpan = document.getElementById('pitch');
-    var rollSpan = document.getElementById('roll');
-    var speedSpan = document.getElementById('speed');
-    var fromBehind = document.getElementById('fromBehind');
 
-    viewer.scene.preUpdate.addEventListener(function(scene, time) {
-        speedVector = Cartesian3.multiplyByScalar(Cartesian3.UNIT_X, speed / 10, speedVector);
-        position = Matrix4.multiplyByPoint(planePrimitive.modelMatrix, speedVector, position);
+    // 移动小人
+    let oldPosition,oldwgs84,newlong,newlat,newPosition,newwgs84;
+    function movePerson(isUP) {
+        oldPosition = new Cartesian3(position.x, position.y, position.z);
+        oldwgs84 = Ellipsoid.WGS84.cartesianToCartographic(oldPosition);
+
+    // 计算速度矩阵
+   // view.scene.preUpdate.addEventListener(function(scene, time) {
+        if(isUP>0){
+            speedVector = Cartesian3.multiplyByScalar(Cartesian3.UNIT_X,speed,speedVector);
+        }else{
+            speedVector = Cartesian3.multiplyByScalar(Cartesian3.UNIT_X,-speed,speedVector);
+        }
+        // 根据速度计算出下一个位置的坐标
+        position = Matrix4.multiplyByPoint(personPrimitive.modelMatrix ,speedVector, position);
         pathPosition.addSample(JulianDate.now(), position);
-        Transforms.headingPitchRollToFixedFrame(position, hpRoll, Ellipsoid.WGS84, fixedFrameTransform, planePrimitive.modelMatrix);
 
-        if (fromBehind.checked) {
-            // Zoom to model
-            Matrix4.multiplyByPoint(planePrimitive.modelMatrix, planePrimitive.boundingSphere.center, center);
-            hpRange.heading = hpRoll.heading;
-            hpRange.pitch = hpRoll.pitch;
-            camera.lookAt(center, hpRange);
-        }
-    });
+        //计算经纬度start
+        newPosition = new Cartesian3(position.x, position.y, position.z);
+        newwgs84 = Ellipsoid.WGS84.cartesianToCartographic(newPosition);
+        newlong = Math.toDegrees(newwgs84.longitude);
+        newlat = Math.toDegrees(newwgs84.latitude);
+        //计算经纬度end
+       //画线=======start
+        view.entities.add({
+            position : pathPosition,
+            name : 'trajectory',
+            path : {
+                show : true,
+                leadTime : 0,
+                trailTime : 60,
+                width : 5,
+                resolution : 1,
+                material : new PolylineGlowMaterialProperty({
+                    glowPower : 0.3,
+                    color : Color.RED
+                })
+            }
+        });
+        //画线=======end
+        
 
-    viewer.scene.preRender.addEventListener(function(scene, time) {
-        headingSpan.innerHTML = Math.toDegrees(hpRoll.heading).toFixed(1);
-        pitchSpan.innerHTML = Math.toDegrees(hpRoll.pitch).toFixed(1);
-        rollSpan.innerHTML = Math.toDegrees(hpRoll.roll).toFixed(1);
-        speedSpan.innerHTML = speed.toFixed(1);
-    });
+        // 小人移动
+        Transforms.headingPitchRollToFixedFrame(position, hpRoll, Ellipsoid.WGS84, fixedFrameTransforms, personPrimitive.modelMatrix);
+        
+        longitude.innerHTML = newlong.toFixed(4);
+        latitude.innerHTML = newlat.toFixed(4);
+        altitude.innerHTML = newwgs84.height.toFixed(4);
+        //});
+        //镜头移动
+        view.camera.flyTo({
+            destination : Cartesian3.fromDegrees(newlong, newlat,1500)
+        });
+    }
 }
-
-
-
 render(){
-    return (
-    	<div>
+    return(
+        <div>
             <div id="cesiumContainer" ref={ element => this.cesiumContainer = element }/>
-        	<div id="toolbar">
-			    <table className="infoPanel">
-			        <tbody>
-			        <tr>
-			            <td>Click on the 3D window then use the keyboard to change settings.</td>
-			        </tr>
-			        <tr>
-			            <td>Heading: <span id="heading"></span>°</td>
-			        </tr>
-			        <tr>
-			            <td>← to left/→ to right</td>
-			        </tr>
-			        <tr>
-			            <td>Pitch: <span id="pitch"></span>°</td>
-			        </tr>
-			        <tr>
-			            <td>↑ to up/↓ to down</td>
-			        </tr>
-			        <tr>
-			            <td>roll: <span id="roll"></span>°</td>
-			        </tr>
-			        <tr>
-			            <td>← + ⇧ left/→ + ⇧ right</td>
-			        </tr>
-			        <tr>
-			            <td>Speed: <span id="speed"></span>m/s</td>
-			        </tr>
-			        <tr>
-			            <td>↑ + ⇧ to speed up/↓ + ⇧ to speed down</td>
-			        </tr>
-			        <tr>
-			            <td>following aircraft
-			                <input id="fromBehind" type="checkbox"/>
-			            </td>
-			        </tr>
-
-			        </tbody>
-			    </table>
-			</div>
-		</div>
-    );
+            <div id="toolbar">
+                <table className="infoPanel">
+                                        <tbody>
+                        <tr>
+                            <td className='TrajTitle'>操作指南：</td>
+                        </tr>
+                        <tr>
+                            <td>← 左转/→ 右转</td>
+                        </tr>
+                        <tr>
+                            <td>↑ 向前/↓ 向后</td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <td className='TrajTitle'>相关参数：</td>
+                        </tr>
+                        <tr>
+                            <td>经度: <span id="longitude"></span>°</td>
+                        </tr>
+                        <tr>
+                            <td>纬度: <span id="latitude"></span>°</td>
+                        </tr>
+                        <tr>
+                            <td>海拔: <span id="altitude"></span>°</td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+    )
 }
 }
 

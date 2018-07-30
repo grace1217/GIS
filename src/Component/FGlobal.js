@@ -6,7 +6,7 @@ import Viewer from "cesium/Source/Widgets/Viewer/Viewer";
 import WebMapTileServiceImageryProvider from "cesium/Source/Scene/WebMapTileServiceImageryProvider";
 
 class FGlobal extends Component{
-	componentDidMount() {
+	componentDidMount() { 
 		var viewer = new Viewer('cesiumContainer', {
 		    animation: false,
 		    baseLayerPicker: false,
@@ -16,7 +16,7 @@ class FGlobal extends Component{
 		    navigationHelpButton: false,
 		    infoBox: true,
 		});
- 
+  
 		viewer.imageryLayers.addImageryProvider(new WebMapTileServiceImageryProvider({
 	        url: "http://t0.tianditu.com/img_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles",
 	        layer: "tdtImgBasicLayer",

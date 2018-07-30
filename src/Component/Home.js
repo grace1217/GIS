@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from '../logo.svg';
+import bg from '../bg.png'
 
 class Home extends Component{
 	constructor(props){
@@ -40,7 +40,7 @@ class Home extends Component{
 		return(
 			<div className='home-main'>
 				<div className="home-middle">
-		            <img src={logo} className="big-logo" alt="logo" />
+		            <img src={bg} alt="logo" />
 		            <div className="home-middle-right" ref='loginShow'>
 		            	<button className="login">注册</button>
 		                <button className="login" onClick={this.showSubmit.bind(this)}>登陆</button>

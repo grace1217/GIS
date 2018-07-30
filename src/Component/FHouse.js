@@ -1,29 +1,30 @@
 import React, { Component } from 'react';
 import Viewer from "cesium/Source/Widgets/Viewer/Viewer";
- 
+
+import Cesium3DTileset from "cesium/Source/Scene/Cesium3DTileset";
+
+import IonResource from "cesium/Source/Core/IonResource";
+
 class FHouse extends Component{
-	componentDidMount() {
-        this.viewer = new Viewer(this.cesiumContainer,{
-		    shouldAnimate : true,	    
-		    infoBox: false, //Disable InfoBox widget
-    		selectionIndicator: false, //Disable selection indicator	
-	    });
+componentDidMount() {
+var viewer = new Viewer('cesiumContainer');
 
-		//Enable lighting based on sun/moon positions
-		this.viewer.scene.globe.enableLighting = true;
+var tileset = new Cesium3DTileset({
+    url: IonResource.fromAssetId(3836)
+});
 
-		//Enable depth testing so things behind the terrain disappear.
-		this.viewer.scene.globe.depthTestAgainstTerrain = true;
+viewer.scene.primitives.add(tileset);
+viewer.zoomTo(tileset);
 
-		
-	}
-	render(){
-		return(
-			<div>
-				<div id="cesiumContainer" ref={ element => this.cesiumContainer = element }/>
-			</div>
-		)
-	}
+}
+render(){
+	return(
+		<div>
+			<div id="cesiumContainer" ref={ element => this.cesiumContainer = element }/>
+			
+		</div>
+	)
+}
 }
 
 export default FHouse

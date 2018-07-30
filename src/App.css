@@ -1,45 +1,47 @@
 .App {
   text-align: center;
 }
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-  float:right;
-  margin-top: -50px;
-}
-img{
-  animation: App-logo-spin infinite 20s linear;
-  margin-top:90px;
-  height: 200px;
 
+
+/****  头部样式Start ****/
+.AppHeader {
+  background-color: #36d9a2;
+  height: 70px;
+  padding: 6px;
+  color: white;
 }
-.App-logo-name{
+.AppLeft{
+  float: left;
+  position: relative;
+}
+.AppLeft>h1{
+  text-indent: -9999px;
+  margin-top: 10px;
+}
+.AppLeft>.bigLogo{
   position: absolute;
-  right: 10px;
-  top: -15px;
-  font:800 24px/80px "simsun";
+  top: 0;  height: 50px;
+  margin-top: 10px;
+  border: none;
+}
+.AppTitle {
+  font-size: 32px;
+  font-weight: 700;
+  font-family: '微软雅黑';
+  margin-top: 17px;
 }
 .welcome{
   position: absolute;
-  top: 74px;
+  top: 52px;
   right: 10px;
 }
-.App-header {
-  background-color: skyblue;
-  height: 70px;
-  padding: 20px;
-  color: white;
-}
+/****  头部样式End ****/
 
-.App-title {
-  text-align: center;
-  font-size: 1.3em;
-}
 
 /****  内容样式Start ****/
 #box{
   width:100%;
-  height:500px;
+  height:530px;
 
  /* background-color: #0b97c4;*/
 
@@ -49,35 +51,36 @@ img{
 #box-left{
   float:left;
   width: 200px;
-  height:500px;
-  background-color: blueviolet;
+  height:530px;
+  background-color: #f7f7f7;
   text-align: center;
-  color: white;
+  color: #333;
   font: 700 24px/50px "simsun";
 }
 
-
-li .a, .dropbtn
-{
-  color:white;
-  text-align:center;
-  text-decoration:none;
+#box-left .dropbtn{
+  color: #333;
+  text-align: center;
+  display: inline-block;
+  width: 200px;
 }
 
-li .a:hover
-{
-  background-color:#111;
+#box-left  .dropbtn.dropbtnshow{
+  color: #36d9a2;
+  background: #fff;
+}
+#box-left .dropbtn:hover{
+  color: #36d9a2;
+  background: #fff;
 }
 
-.dropdown
-{
+.dropdown{
   display:block;
 }
 
 .dropdown-content
 {
-  display: none;
-  background-color:#f9f9f9;
+  display: none;  
   min-width:160px;
   box-shadow:0px 8px 16px 0px rgba(0,0,0,0.2);
 }
@@ -90,12 +93,16 @@ li .a:hover
   display: block;
 }
 /*点击显示End*/
+.dropdown-content .a{
+  height: 40px;
+  line-height: 40px;
+}
 
-.dropdown-content .a
+.dropdown-content .a>a
 {
-  color:black;
-  text-decoration:none;
-  display:block;
+  display: inline-block;
+  font-size: 18px;
+  color: #666;
 }
 
 .dropdown-content .a:hover {
@@ -106,7 +113,6 @@ li .a:hover
   display:block;
 }
 
-
 #box-left li span {
   display: block;
   font: 700 15px/40px "simsun";
@@ -114,14 +120,10 @@ li .a:hover
 
 /*内容右边样式*/
 #box-right{
+  position: relative;
   overflow: hidden;
-  height:500px;
+  height:530px;
   background-color: red;
-}
-.text{
-  color:white;
-  font:700 15px/40px "simsun";
-  text-align: left;
 }
 /****  内容样式End ****/
 
@@ -129,18 +131,13 @@ li .a:hover
 footer{
   width:100%;
   height:50px;
-  margin-bottom: 0px;
+  line-height: 50px;
   color: white;
-  background-color:skyblue ;
+  background-color:#36d9a2 ;
   text-align: center;
   font:700 20px/70px "simsun";
 }
 /****  Footer样式End ****/
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
 
 
 /**** Home组件上的样式 ****/
@@ -154,19 +151,22 @@ footer{
 .home-middle{
   position: relative;
   width: 100%;
-  height:500px;
+  height:530px;
   margin-right: 200px;
-  background-color: darkblue;
+  background-color: #fff;
  /* background: url("logo.svg") no-repeat;*/
 }
 .home-middle>img{
-  margin-right: 200px;
+  margin-right: 218px;
+  transform: scale(1.61);
+  margin-top: 80px;
 }
 /**登录注册样式**/
 .home-middle-right{
+  display: none;
   position: absolute;
   top: 0;
-  right: 200px;
+  right: 220px;
 }
 .login{
   width:44px;
@@ -196,10 +196,17 @@ footer{
   top: 0;
   right: 0;
   width: 200px;
-  height: 500px;
-  max-height: 500px;
-  background-color: blueviolet;
+  height: 530px;
+  max-height: 530px;
+  background-color: #f7f7f7;
+  color: #333;
+  padding: 10px;
 }
+.text{
+  font:700 15px/40px "simsun";
+  text-align: left;
+}
+
 
 .home-field {
   margin-bottom: 15px;
@@ -249,4 +256,26 @@ footer{
 
 .home-field-button button:active {
   background: #13c1f1;
+}
+
+/****  小车经纬度显示 ****/
+ #toolbar {
+  background: rgb(242, 240, 217);
+  padding: 4px;
+  border-radius: 4px;
+  position: absolute;
+  top: 0;
+}
+#toolbar input {
+  vertical-align: middle;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+#toolbar .header {
+  font-weight: bold;
+}
+#toolbar .TrajTitle{
+  text-align: left;
+  font-size: 18px;
+  font-weight: 700;
 }
