@@ -1,13 +1,8 @@
+# cesium-react-demo
+基于webpack、react、cesium实现的一个简单脚手架，内置demo
 
-## 项目运行
+## 安装
+npm install
 
-```
-git clone https://github.com/fengye1/react-cesium-demo.git
-
-cd react-cesium-demo （进入当前的项目）
-
-npm install  (安装依赖包)
-
-npm start (运行本地开发环境)
-
-```
+## 启动
+npm start

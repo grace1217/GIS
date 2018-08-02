@@ -28,3 +28,6 @@ a{
 .cesium-viewer-bottom{
 	display:  none;
 }
+.cesium-performanceDisplay{
+  display: none;
+}
